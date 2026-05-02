@@ -1,0 +1,6 @@
+{
+  "name": "Halimah's Sanctuary",
+  "description": "A deeply personal, mobile-first sanctuary for Halimah's 20th birthday.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["Web Audio API", "Microphone Analysis", "Fluid Animations"]
+}
