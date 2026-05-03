@@ -16,6 +16,10 @@
 }
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
   body {
     @apply bg-icy text-navy font-sans antialiased overflow-x-hidden;
   }
@@ -33,15 +37,28 @@
   box-shadow: var(--shadow-neumorphic-inset);
 }
 
-@keyframes float {
-  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-  20% { opacity: 0.6; }
-  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+/* ─── Floating particle (upward drift) ─── */
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(1);     opacity: 0; }
+  8%   { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-105vh) scale(0.8); opacity: 0; }
 }
 
+/* ─── Tumble (rotation for particles) ─── */
+@keyframes tumble {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Legacy .floating-heart support */
 .floating-heart {
-  position: fixed;
+  position: absolute;
   pointer-events: none;
-  animation: float linear infinite;
-  z-index: 0;
+  animation: floatUp linear infinite;
+}
+
+.floating-particle {
+  position: absolute;
+  pointer-events: none;
 }

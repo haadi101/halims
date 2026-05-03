@@ -8,18 +8,43 @@ import FinalMessage from './components/FinalMessage';
 
 type Phase = 'envelope' | 'letter' | 'cake' | 'vault' | 'payload';
 
+// Per-phase exit/enter variants
+const transitions: Record<Phase, { exit: object; enter: object }> = {
+  envelope: {
+    exit:  { opacity: 0, scale: 1.08, y: -40, filter: 'blur(6px)' },
+    enter: { opacity: 0, scale: 0.94, y: 20 },
+  },
+  letter: {
+    exit:  { opacity: 0, x: -60, filter: 'blur(4px)' },
+    enter: { opacity: 0, y: 80 },
+  },
+  cake: {
+    exit:  { opacity: 0, scale: 0.92, y: 30 },
+    enter: { opacity: 0, scale: 1.06 },
+  },
+  vault: {
+    exit:  { opacity: 0, y: -50, filter: 'blur(8px)' },
+    enter: { opacity: 0 },
+  },
+  payload: {
+    exit:  { opacity: 0 },
+    enter: { opacity: 0, scale: 0.96 },
+  },
+};
+
 export default function App() {
   const [phase, setPhase] = useState<Phase>('envelope');
 
   return (
-    <div className="min-h-screen w-full bg-icy overflow-x-hidden">
+    <div className="min-h-dvh w-full bg-icy overflow-x-hidden">
       <AnimatePresence mode="wait">
         {phase === 'envelope' && (
           <motion.div
             key="envelope"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 0.8 }}
+            initial={transitions.envelope.enter}
+            animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+            exit={transitions.envelope.exit}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
             <Envelope onOpen={() => setPhase('letter')} />
           </motion.div>
@@ -28,10 +53,10 @@ export default function App() {
         {phase === 'letter' && (
           <motion.div
             key="letter"
-            initial={{ opacity: 0, y: 100 }}
+            initial={transitions.letter.enter}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "circOut" }}
+            exit={transitions.letter.exit}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
             <Letter onNext={() => setPhase('cake')} />
           </motion.div>
@@ -40,10 +65,10 @@ export default function App() {
         {phase === 'cake' && (
           <motion.div
             key="cake"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
+            initial={transitions.cake.enter}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={transitions.cake.exit}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <Cake onComplete={() => setPhase('vault')} />
           </motion.div>
@@ -52,10 +77,10 @@ export default function App() {
         {phase === 'vault' && (
           <motion.div
             key="vault"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
+            initial={transitions.vault.enter}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={transitions.vault.exit}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-50"
           >
             <PinVault onUnlocked={() => setPhase('payload')} />
@@ -65,9 +90,9 @@ export default function App() {
         {phase === 'payload' && (
           <motion.div
             key="payload"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2 }}
+            initial={transitions.payload.enter}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <FinalMessage />
           </motion.div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShieldCheck, ChevronRight } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
+import { haptic } from '../utils/haptic';
 
 interface PinVaultProps {
   onUnlocked: () => void;
@@ -19,13 +20,12 @@ export default function PinVault({ onUnlocked }: PinVaultProps) {
 
   const handleKeyPress = (num: string) => {
     if (pin.length < 4) {
+      haptic.tap();
       const newPin = pin + num;
       setPin(newPin);
       if (newPin.length === 4) {
-        // Instant validation bypass as requested: reach 4 digits, instantly dissolve
-        setTimeout(() => {
-          onUnlocked();
-        }, 500);
+        haptic.success();
+        setTimeout(() => { onUnlocked(); }, 500);
       }
     }
   };
